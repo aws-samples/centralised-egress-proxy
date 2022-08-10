@@ -1,0 +1,1291 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this
+# software and associated documentation files (the "Software"), to deal in the Software
+# without restriction, including without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  BranchName:
+    Description: CodeCommit branch name
+    Type: String
+    Default: main
+  RepositoryName:
+    Description: CodeCommit repository name
+    Type: String
+  TotalAZsInRegion:
+    Type: Number
+    Default: 2
+    AllowedValues:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+    Description: Select Number of AZs in the Region.
+  AllowedPrincipalsList:
+    Type: CommaDelimitedList
+    Default: ''
+
+Conditions:
+  SixAz: !Equals
+    - !Ref TotalAZsInRegion
+    - 6
+  FiveAz: !Or
+    - !Equals
+      - !Ref TotalAZsInRegion
+      - 5
+    - !Condition SixAz
+  FourAz: !Or
+    - !Equals
+      - !Ref TotalAZsInRegion
+      - 4
+    - !Condition FiveAz
+  ThreeAz: !Or
+    - !Equals
+      - !Ref TotalAZsInRegion
+      - 3
+    - !Condition FourAz
+  TwoAz: !Or
+    - !Equals
+      - !Ref TotalAZsInRegion
+      - 2
+    - !Condition ThreeAz
+  IsPrincipalProvided: 
+    !Not [!Equals [!Join ["",!Ref AllowedPrincipalsList],'']]
+
+
+
+Resources:
+#Infra Networking
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/21
+      Tags:
+      - Key: Name
+        Value: !Sub 'VPC - ${AWS::StackName}'
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub 'IGW - ${AWS::StackName}'
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Route Table- ${AWS::StackName}' 
+  
+  PublicRouteTableRoute:
+   DependsOn:
+    - AttachGateway
+   Type: AWS::EC2::Route
+   Properties:
+      RouteTableId:
+         Ref: PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+         Ref: InternetGateway
+#AZ 1
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 0
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 1 - ${AWS::StackName}'
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.0/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 0
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 1 - ${AWS::StackName}'
+
+  PublicRouteTableSubnetAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  EIP1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 1 - ${AWS::StackName}'
+
+  PublicNATGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+        AllocationId: !GetAtt EIP1.AllocationId
+        SubnetId:
+          Ref: PublicSubnet1
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 1 - ${AWS::StackName}' 
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 1- ${AWS::StackName}' 
+  PrivateRouteTable1Route:
+   Type: AWS::EC2::Route
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway1
+  PrivateRouteTableSubnetAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+#AZ 2
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: TwoAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 1
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 2 - ${AWS::StackName}'
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: TwoAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.32/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 1
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 2 - ${AWS::StackName}'
+        
+  PublicRouteTableSubnetAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: TwoAz
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+  EIP2:
+    Type: AWS::EC2::EIP
+    Condition: TwoAz
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 2 - ${AWS::StackName}'
+
+  PublicNATGateway2:
+    Type: AWS::EC2::NatGateway
+    Condition: TwoAz
+    Properties:
+        AllocationId: !GetAtt EIP2.AllocationId
+        SubnetId:
+          Ref: PublicSubnet2
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 2 - ${AWS::StackName}' 
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Condition: TwoAz
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 2- ${AWS::StackName}' 
+  PrivateRouteTable2Route:
+   Type: AWS::EC2::Route
+   Condition: TwoAz
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway2
+  PrivateRouteTableSubnetAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: TwoAz
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+#AZ 3
+  PrivateSubnet3:
+    Type: AWS::EC2::Subnet
+    Condition: ThreeAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.3.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 2
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 3 - ${AWS::StackName}'
+
+  PublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Condition: ThreeAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.64/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 2
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 3 - ${AWS::StackName}'
+
+  PublicRouteTableSubnetAssociation3:
+  
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: ThreeAz
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet3
+
+  EIP3:
+    Type: AWS::EC2::EIP
+    Condition: ThreeAz
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 3 - ${AWS::StackName}'
+
+  PublicNATGateway3:
+    Type: AWS::EC2::NatGateway
+    Condition: ThreeAz
+    Properties:
+        AllocationId: !GetAtt EIP3.AllocationId
+        SubnetId:
+          Ref: PublicSubnet3
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 3 - ${AWS::StackName}' 
+  PrivateRouteTable3:
+    Type: AWS::EC2::RouteTable
+    Condition: ThreeAz
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 3- ${AWS::StackName}' 
+  PrivateRouteTable3Route:
+   Type: AWS::EC2::Route
+   Condition: ThreeAz
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable3
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway3
+  PrivateRouteTableSubnetAssociation3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: ThreeAz
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable3
+      SubnetId: !Ref PrivateSubnet3
+
+#AZ 4
+  PrivateSubnet4:
+    Type: AWS::EC2::Subnet
+    Condition: FourAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.4.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 3
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 4 - ${AWS::StackName}'
+
+  PublicSubnet4:
+    Type: AWS::EC2::Subnet
+    Condition: FourAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.96/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 3
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 4 - ${AWS::StackName}'
+
+  PublicRouteTableSubnetAssociation4:
+  
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: FourAz
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet4
+
+  EIP4:
+    Type: AWS::EC2::EIP
+    Condition: FourAz
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 4 - ${AWS::StackName}'
+
+  PublicNATGateway4:
+    Type: AWS::EC2::NatGateway
+    Condition: FourAz
+    Properties:
+        AllocationId: !GetAtt EIP4.AllocationId
+        SubnetId:
+          Ref: PublicSubnet4
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 4 - ${AWS::StackName}' 
+  PrivateRouteTable4:
+    Type: AWS::EC2::RouteTable
+    Condition: FourAz
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 4- ${AWS::StackName}' 
+  PrivateRouteTable4Route:
+   Type: AWS::EC2::Route
+   Condition: FourAz
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable4
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway4
+  PrivateRouteTableSubnetAssociation4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: FourAz
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable4
+      SubnetId: !Ref PrivateSubnet4
+
+#AZ 5
+  PrivateSubnet5:
+    Type: AWS::EC2::Subnet
+    Condition: FiveAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.5.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 4
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 5 - ${AWS::StackName}'
+
+  PublicSubnet5:
+    Type: AWS::EC2::Subnet
+    Condition: FiveAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.128/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 4
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 5 - ${AWS::StackName}'
+
+  PublicRouteTableSubnetAssociation5:
+  
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: FiveAz
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet5
+
+  EIP5:
+    Type: AWS::EC2::EIP
+    Condition: FiveAz
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 5 - ${AWS::StackName}'
+
+  PublicNATGateway5:
+    Type: AWS::EC2::NatGateway
+    Condition: FiveAz
+    Properties:
+        AllocationId: !GetAtt EIP5.AllocationId
+        SubnetId:
+          Ref: PublicSubnet5
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 5 - ${AWS::StackName}' 
+  PrivateRouteTable5:
+    Type: AWS::EC2::RouteTable
+    Condition: FiveAz
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 5- ${AWS::StackName}' 
+  PrivateRouteTable5Route:
+   Type: AWS::EC2::Route
+   Condition: FiveAz
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable5
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway5
+  PrivateRouteTableSubnetAssociation5:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: FiveAz
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable5
+      SubnetId: !Ref PrivateSubnet5
+
+#AZ 6
+  PrivateSubnet6:
+    Type: AWS::EC2::Subnet
+    Condition: SixAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.6.0/24
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 5
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private Subnet 6 - ${AWS::StackName}'
+
+  PublicSubnet6:
+    Type: AWS::EC2::Subnet
+    Condition: SixAz
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.160/27
+      MapPublicIpOnLaunch: False
+      AvailabilityZone: !Select 
+      - 5
+      - !GetAZs 
+        Ref: 'AWS::Region'
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet 6 - ${AWS::StackName}'
+
+  PublicRouteTableSubnetAssociation6:
+  
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: SixAz
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet6
+
+  EIP6:
+    Type: AWS::EC2::EIP
+    Condition: SixAz
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: !Sub 'EIP 6 - ${AWS::StackName}'
+
+  PublicNATGateway6:
+    Type: AWS::EC2::NatGateway
+    Condition: SixAz
+    Properties:
+        AllocationId: !GetAtt EIP6.AllocationId
+        SubnetId:
+          Ref: PublicSubnet6
+        Tags:
+        - Key: Name
+          Value: !Sub 'Public NATGateway 6 - ${AWS::StackName}' 
+  PrivateRouteTable6:
+    Type: AWS::EC2::RouteTable
+    Condition: SixAz
+    Properties:
+      VpcId:  
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: !Sub 'Private RouteTable 6- ${AWS::StackName}' 
+  PrivateRouteTable6Route:
+   Type: AWS::EC2::Route
+   Condition: SixAz
+   Properties:
+      RouteTableId:
+         Ref: PrivateRouteTable6
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+         Ref: PublicNATGateway6
+  PrivateRouteTableSubnetAssociation6:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: SixAz
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable6
+      SubnetId: !Ref PrivateSubnet6
+
+#Flow Logs
+
+  VPCFlowLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties: 
+        RetentionInDays: 365
+
+  VPCFlowLogRoleRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal: 
+              Service: vpc-flow-logs.amazonaws.com
+            Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: CW
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: 
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  Resource: !GetAtt VPCFlowLogGroup.Arn
+        
+  VPCFlowLog:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      DeliverLogsPermissionArn: !GetAtt VPCFlowLogRoleRole.Arn
+      LogDestination: !GetAtt VPCFlowLogGroup.Arn
+      ResourceId: !Ref VPC
+      ResourceType: VPC
+      TrafficType: ALL
+
+#SQUID Components
+  CodeBuildServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+         - Effect: Allow
+           Principal: 
+            Service: codebuild.amazonaws.com
+           Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: CW
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - logs:CreateLogGroup
+                 - logs:CreateLogStream
+                 - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AWS::StackName}-*'
+        - PolicyName: CC
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - codecommit:GitPull
+                Resource: 
+                 - !Sub 'arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${RepositoryName}'
+                 
+        - PolicyName: CB
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - codebuild:CreateReportGroup
+                 - codebuild:CreateReport
+                 - Codebuild:UpdateReport
+                 - codebuild:BatchPutTestCases
+                 - codebuild:BatchPutCodeCoverages
+                Resource: 
+                 - !Sub 'arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/${AWS::StackName}-SquidProxyBuild-*'
+        - PolicyName: ECRAuth
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - ecr:GetAuthorizationToken
+                Resource: '*'
+        - PolicyName: ECR
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - ecr:PutImage
+                 - ecr:InitiateLayerUpload
+                 - ecr:UploadLayerPart
+                 - ecr:CompleteLayerUpload
+                 - ecr:BatchCheckLayerAvailability
+                Resource: 
+                    - !GetAtt ECRRepository.Arn
+        - PolicyName: PipelineS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                 - s3:PutObject
+                 - s3:GetObject
+                 - s3:GetObjectVersion
+                 - s3:GetBucketAcl
+                 - s3:GetBucketLocation
+                Resource: 
+                    - !Sub '${CodePipelineArtifactStoreBucket.Arn}*'
+                 
+                
+  ECRRepository:
+    Type: 'AWS::ECR::Repository'
+    Properties:
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      ImageScanningConfiguration:
+        ScanOnPush: true
+
+    
+  CodeBuildProject:
+    Type: 'AWS::CodeBuild::Project'
+    Properties:
+      Name: !Sub '${AWS::StackName}-SquidProxyBuild'
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: 'aws/codebuild/standard:5.0'
+        PrivilegedMode: true
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+         - Name: IMAGE_REPO_NAME
+           Type: PLAINTEXT
+           Value: !GetAtt ECRRepository.RepositoryUri
+         - Name: IMAGE_URI
+           Type: PLAINTEXT
+           Value: !Sub '${ECRRepository.RepositoryUri}:latest'
+         - Name: ECR_REPOSITORY
+           Type: PLAINTEXT
+           Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com"
+         - Name: IMAGE_TAG
+           Type: PLAINTEXT
+           Value: "latest"
+         - Name: REGION
+           Type: PLAINTEXT
+           Value: !Sub "${AWS::Region}"
+         - Name: CONTAINER_NAME
+           Type: PLAINTEXT
+           Value: !Sub '${AWS::StackName}-SquidProxyContainer'
+          
+         
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        BuildSpec: |
+            version: 0.2
+            phases:
+              pre_build:
+                commands:
+                   - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY
+              build:
+                commands:
+                  - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER .
+                  - docker tag $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER $IMAGE_REPO_NAME:$IMAGE_TAG
+                  - printf '{"ImageURI":$IMAGE_REPO_NAME:$IMAGE_TAG}' > imageDetail.json
+              post_build:
+                commands:
+                  - docker push $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER
+                  - docker push $IMAGE_REPO_NAME:$IMAGE_TAG
+                  - printf '[{"name":"'$CONTAINER_NAME'","imageUri":"'$IMAGE_URI'"}]' > imageDetail.json
+            artifacts:
+              files:
+                - imageDetail.json
+        Location: !Sub 'https://git-codecommit.${AWS::Region}.amazonaws.com/v1/repos/${RepositoryName}'
+        Type: CODECOMMIT
+        
+  ECSTaskExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+         - Effect: Allow
+           Principal: 
+            Service: ecs-tasks.amazonaws.com
+           Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ECSCluster:
+    DependsOn: 
+     - NLB
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+        CapacityProviders:
+            - FARGATE
+            - FARGATE_SPOT
+        ClusterName: !Sub '${AWS::StackName}-ECSCluster'
+        ClusterSettings:
+          - Name: containerInsights
+            Value: enabled
+
+  ECSTaskLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties: 
+        RetentionInDays: 365
+  ECSTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+        ContainerDefinitions:
+            - 
+                Cpu: 0
+                Memory: 256
+                Name: !Sub '${AWS::StackName}-SquidProxyContainer'
+                Image: 'public.ecr.aws/nginx/nginx'
+                PortMappings:
+                    -   ContainerPort: 3128
+                        HostPort: 3128
+                        Protocol: tcp
+                LogConfiguration:
+                    LogDriver: awslogs
+                    Options:
+                        awslogs-group: !Ref ECSTaskLogGroup
+                        awslogs-region: !Sub '${AWS::Region}'
+                        awslogs-stream-prefix: sqProxy
+        Memory: 512
+        Cpu: 256
+        RequiresCompatibilities:
+            - FARGATE
+        NetworkMode: awsvpc
+        ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+        TaskRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+        
+  ECSTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+        Name: !Sub '${AWS::StackName}-ECSTargetGroup'
+        VpcId: !Ref VPC
+        Protocol: TCP
+        Port: 3128
+        TargetType: ip
+
+  AccessLogsS3:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'AES256'
+              
+# NLB and access logs
+ 
+      
+
+  NLBAccessLogsBucketPolicy:
+      Type: 'AWS::S3::BucketPolicy'
+      Properties:
+        Bucket: !Ref AccessLogsS3
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Sid: Denyhttp
+              Effect: Deny
+              Action: 's3:*'
+              Principal: '*'
+              Resource: 
+                - !Sub '${AccessLogsS3.Arn}/*'
+              Condition:
+                Bool:
+                  'aws:SecureTransport': false
+
+            - Sid: AWSLogDeliveryWrite
+              Effect: Allow
+              Principal: 
+                Service: "delivery.logs.amazonaws.com"
+              Action: 's3:PutObject'
+              Resource: !Sub '${AccessLogsS3.Arn}/nlb/*'
+              Condition:
+                StringEquals:
+                  s3:x-amz-acl: 'bucket-owner-full-control'
+
+            - Sid: AWSLogDeliveryAclCheck
+              Effect: Allow
+              Principal: 
+                Service: "delivery.logs.amazonaws.com"
+              Action: 's3:GetBucketAcl'
+              Resource: !Sub '${AccessLogsS3.Arn}'
+
+            - Sid: S3ServerAccessLogsPolicy
+              Effect: Allow
+              Principal: 
+                Service: "logging.s3.amazonaws.com"
+              Action: 's3:PutObject'
+              Resource: !Sub '${AccessLogsS3.Arn}/codeartifactstores3*'
+              Condition:
+                ArnLike:
+                  aws:SourceArn: !Sub '${CodePipelineArtifactStoreBucket.Arn}'
+                StringEquals:
+                  aws:SourceAccount: !Sub '${AWS::AccountId}'
+
+  NLB:
+    DependsOn: NLBAccessLogsBucketPolicy
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+        Scheme: internal
+        Subnets:
+            - !Ref PrivateSubnet1
+            - !If
+              - TwoAz
+              - !Ref PrivateSubnet2
+              - !Ref 'AWS::NoValue'
+            - !If
+              - ThreeAz
+              - !Ref PrivateSubnet3
+              - !Ref 'AWS::NoValue'
+            - !If
+              - FourAz
+              - !Ref PrivateSubnet4
+              - !Ref 'AWS::NoValue'
+            - !If
+              - FiveAz
+              - !Ref PrivateSubnet5
+              - !Ref 'AWS::NoValue'
+            - !If
+              - SixAz
+              - !Ref PrivateSubnet6
+              - !Ref 'AWS::NoValue'
+        Type: network
+        LoadBalancerAttributes:
+          - Key: access_logs.s3.enabled
+            Value: "true"
+          - Key: access_logs.s3.bucket
+            Value: !Ref AccessLogsS3
+          - Key: access_logs.s3.prefix
+            Value: "nlb"
+          - Key: deletion_protection.enabled
+            Value: "true"
+
+
+  NLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      LoadBalancerArn: !Ref NLB
+      Port: 3128
+      Protocol: TCP 
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ECSTargetGroup
+  
+  ECSTaskSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+        GroupDescription: ECS Service Security Group
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+         - IpProtocol: tcp
+           CidrIp: 10.0.0.0/21
+           FromPort: 3128
+           ToPort: 3128
+           Description: Allow Proxy traffic from the VPC
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+            Description: Allow outboud to internet.
+
+  ECSTaskSecurityGroupSelfIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+       GroupId: !Ref ECSTaskSecurityGroup
+       SourceSecurityGroupId:  !GetAtt ECSTaskSecurityGroup.GroupId
+       IpProtocol: -1
+       Description: Ingress from the self.
+
+
+  ECSService:
+    Type: 'AWS::ECS::Service'
+    DependsOn: NLBListener
+    Properties:
+        Cluster : !GetAtt ECSCluster.Arn
+        DeploymentConfiguration:
+            MaximumPercent: 200
+            MinimumHealthyPercent: 100
+        DeploymentController:
+            Type: ECS
+        DesiredCount : 3
+        LaunchType : FARGATE
+        NetworkConfiguration:
+            AwsvpcConfiguration:
+                AssignPublicIp: DISABLED
+                SecurityGroups:
+                    - !Ref ECSTaskSecurityGroup
+                Subnets:
+                    - !Ref PrivateSubnet1
+                    - !If
+                      - TwoAz
+                      - !Ref PrivateSubnet2
+                      - !Ref AWS::NoValue
+                    - !If
+                      - ThreeAz
+                      - !Ref PrivateSubnet3
+                      - !Ref AWS::NoValue
+                    - !If
+                      - FourAz
+                      - !Ref PrivateSubnet4
+                      - !Ref AWS::NoValue
+                    - !If
+                      - FiveAz
+                      - !Ref PrivateSubnet5
+                      - !Ref AWS::NoValue
+                    - !If
+                      - SixAz
+                      - !Ref PrivateSubnet6
+                      - !Ref AWS::NoValue
+        TaskDefinition: !Ref ECSTaskDefinition
+        LoadBalancers:
+            - ContainerName: !Sub '${AWS::StackName}-SquidProxyContainer'
+              ContainerPort: 3128
+              TargetGroupArn: !Ref ECSTargetGroup
+  ECSAutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 20
+      MinCapacity: 3  
+      RoleARN: 
+        Fn::Sub: 'arn:aws:iam::${AWS::AccountId}:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
+      ServiceNamespace: ecs
+      ScalableDimension: 'ecs:service:DesiredCount'
+      ResourceId: !Join 
+        - /
+        - - service
+          - !Ref ECSCluster
+          - !GetAtt ECSService.Name
+  ECSServiceScalingPolicyCPU:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub ${AWS::StackName}-target-tracking-cpu70
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ECSAutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 70.0
+        ScaleInCooldown: 180
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+
+
+  CodePipelineArtifactStoreBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      LoggingConfiguration:
+        DestinationBucketName: !Ref AccessLogsS3
+        LogFilePrefix: codeartifactstores3
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'AES256'
+  
+  CodePipelineArtifactStoreBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref CodePipelineArtifactStoreBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:PutObject'
+            Resource: !Join 
+              - ''
+              - - !GetAtt 
+                  - CodePipelineArtifactStoreBucket
+                  - Arn
+                - /*
+            Condition:
+              StringNotEquals:
+                's3:x-amz-server-side-encryption': 'aws:kms'
+          - Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource: !Join 
+              - ''
+              - - !GetAtt 
+                  - CodePipelineArtifactStoreBucket
+                  - Arn
+                - /*
+            Condition:
+              Bool:
+                'aws:SecureTransport': false    
+
+
+  CodePipelineServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: AWS-CodePipeline-Service
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'codecommit:GetBranch'
+                  - 'codecommit:GetCommit'
+                  - 'codecommit:GetUploadArchiveStatus'
+                  - 'codecommit:UploadArchive'
+                Resource: !Sub 'arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${RepositoryName}'
+              - Effect: Allow
+                Action:
+                  - 'codebuild:BatchGetBuilds'
+                  - 'codebuild:StartBuild'
+                Resource: !GetAtt CodeBuildProject.Arn
+              
+              - Effect: Allow
+                Action:
+                  - 'iam:PassRole'
+                Resource: !GetAtt ECSTaskExecutionRole.Arn
+
+              - Effect: Allow
+                Action:
+                  - 'ecs:ListServices'
+                  - 'ecs:RegisterTaskDefinition'
+                  - 'ecs:ListTaskDefinitions'
+                  - 'ecs:DescribeTaskDefinition'
+                Resource: '*'
+              
+              - Effect: Allow
+                Action:
+                  - 'ecs:DescribeServices'
+                  - 'ecs:UpdateService'
+                  - 'ecs:UpdateCluster'
+                Resource: 
+                  - !GetAtt ECSCluster.Arn
+                  - !Ref ECSService
+              
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                Resource: !Join 
+                  - ''
+                  - - !GetAtt 
+                      - CodePipelineArtifactStoreBucket
+                      - Arn
+                    - /*
+                  
+              
+  CodePipeline:
+    Type: 'AWS::CodePipeline::Pipeline'
+    Properties:
+      Name: !Sub '${AWS::StackName}-SquidProxy-CodeCommitEvents-pipeline' 
+      RoleArn: !GetAtt 
+        - CodePipelineServiceRole
+        - Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: 1
+                Provider: CodeCommit
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                BranchName: !Ref BranchName
+                RepositoryName: !Ref RepositoryName
+                PollForSourceChanges: false
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+              RunOrder: 1    
+        - Name: Deploy
+          Actions:
+            - Name: DeployAction
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: ECS
+              InputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ClusterName: !Ref ECSCluster
+                ServiceName: !Ref ECSService
+                FileName: imageDetail.json
+              RunOrder: 1    
+      ArtifactStore:
+        Type: S3
+        Location: !Ref CodePipelineArtifactStoreBucket
+
+  CodeCommitChangeEventRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        -
+          PolicyName: cwe-pipeline-execution
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              -
+                Effect: Allow
+                Action: codepipeline:StartPipelineExecution
+                Resource: !Sub 'arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${CodePipeline}'
+  CodeCommitChangeEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.codecommit
+        detail-type:
+          - 'CodeCommit Repository State Change'
+        resources:
+          - !Sub 'arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${RepositoryName}' 
+        detail:
+          event:
+            - referenceCreated
+            - referenceUpdated
+          referenceType:
+            - branch
+          referenceName:
+            - !Ref BranchName
+      Targets:
+        -
+          Arn: !Sub 'arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${CodePipeline}'
+          RoleArn: !GetAtt CodeCommitChangeEventRole.Arn
+          Id: !Sub '${AWS::StackName}-CodeCommitEventsRule' 
+
+  VPCEndPointService:
+    Type: AWS::EC2::VPCEndpointService
+    Properties:
+      AcceptanceRequired: false
+      NetworkLoadBalancerArns:
+        - !Ref NLB
+
+  VPCEndPointServicePermission:
+    Condition: IsPrincipalProvided  
+    Type: AWS::EC2::VPCEndpointServicePermissions
+    Properties: 
+      AllowedPrincipals: !Ref AllowedPrincipalsList
+      ServiceId: !Ref VPCEndPointService
+
+Outputs:
+  VPCEndpointServiceName:
+    Value: !Sub 'com.amazonaws.vpce.${AWS::Region}.${VPCEndPointService}'
