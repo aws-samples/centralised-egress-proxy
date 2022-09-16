@@ -11,7 +11,7 @@ The solution can be deployed in 4 steps to get you up and running:
 3. Deploy the solution via the Cloudformation template provided. This solution deploys everything required for the central hub account in the solution overview
 4. Create your VPC endpoint in your spoke account along with an EC2 instance for testing. 
 
-For detailed instructions, please refer to the following AWS blog post: LINK TO POST TO BE ADDED
+For detailed instructions, please refer to the following AWS blog post: https://aws.amazon.com/blogs/networking-and-content-delivery/providing-controlled-internet-access-through-centralised-proxy-servers-using-aws-fargate-and-privatelink/
 
 
 
