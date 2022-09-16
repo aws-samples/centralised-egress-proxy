@@ -873,6 +873,7 @@ Resources:
               Principal: '*'
               Resource: 
                 - !Sub '${AccessLogsS3.Arn}/*'
+                - !Sub '${AccessLogsS3.Arn}'
               Condition:
                 Bool:
                   'aws:SecureTransport': false
@@ -1093,12 +1094,16 @@ Resources:
             Effect: Deny
             Principal: '*'
             Action: 's3:*'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
+            Resource: 
+              - !Join 
+                - ''
+                - - !GetAtt 
+                    - CodePipelineArtifactStoreBucket
+                    - Arn
+                  - /*
+              - !GetAtt 
                   - CodePipelineArtifactStoreBucket
-                  - Arn
-                - /*
+                  - Arn 
             Condition:
               Bool:
                 'aws:SecureTransport': false    
