@@ -846,6 +846,8 @@ Resources:
   AccessLogsS3:
     Type: 'AWS::S3::Bucket'
     Properties:
+      VersioningConfiguration:
+        Status: Enabled
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         IgnorePublicAcls: true
@@ -1060,6 +1062,8 @@ Resources:
       LoggingConfiguration:
         DestinationBucketName: !Ref AccessLogsS3
         LogFilePrefix: codeartifactstores3
+      VersioningConfiguration:
+        Status: Enabled
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         IgnorePublicAcls: true
