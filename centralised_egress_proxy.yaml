@@ -814,8 +814,15 @@ Resources:
             - 
                 Cpu: 0
                 Memory: 256
+                HealthCheck:
+                  Command:
+                    - "CMD-SHELL"
+                    - "exit 0"
+                  Interval: 5
+                  Retries: 2
+                  Timeout: 3
                 Name: !Sub '${AWS::StackName}-SquidProxyContainer'
-                Image: 'public.ecr.aws/nginx/nginx'
+                Image: 'public.ecr.aws/ubuntu/squid:latest'
                 PortMappings:
                     -   ContainerPort: 3128
                         HostPort: 3128
