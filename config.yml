@@ -1,0 +1,68 @@
+cicd:
+  env:
+    account: '000000000000'
+    region: 'eu-west-1'
+  codestarConnectionArn: 'arn:aws:codestar-connections:eu-west-1:000000000000:connection/FIXME'
+  githubTokenArn: 'arn:aws:secretsmanager:eu-west-1:000000000000:secret:/FIXME'
+  repo:
+    owner: 'nkhine'
+    repo: 'serverless-patterns'
+    branch: 'main'
+    path: 'egress-proxy'
+    pipelineName: 'egress-proxy-cicd'
+
+stacks:
+  eu-west-1:
+    env:
+      account: '11111111111' # Hub-Prod
+      region: eu-west-1
+    privateDns:
+      domainName: proxy.domain.io
+      serviceNameSSMPath: /egress-proxy/dev/service-name
+    spokeAccounts: # These are the spoke accounts allowed to use the Proxy
+      - account: '222222222222'
+        vpcs:
+          # Duplicate entries are de-duplicated
+          - id: 'vpc-aaaaaaaa'
+      - account: '333333333333'
+        vpcs:
+          - id: 'vpc-bbbbbbb'
+    vpc:
+      cidr: '10.2.0.0/21'
+      maxAzs: 3
+      flowLogBucketArn: 'arn:aws:s3:::vpc-logs-abc-eu-west-1' # LOGS AWS Account
+      flowLogPrefix: '11111111111' # has to be the account number
+    ecs:
+      desiredCount: 1
+    # yamllint disable-line rule:line-length
+    codestarConnectionArn: 'arn:aws:codestar-connections:eu-west-1:***:connection/***'
+    repo:
+      owner: 'nkhine'
+      repo: 'smart-proxy'
+      branch: 'main'
+  eu-west-2:
+    env:
+      account: '11111111111' # Hub-Prod
+      region: eu-west-2
+    privateDns:
+      domainName: proxy.domain.io
+      serviceNameSSMPath: /egress-proxy/dev/service-name
+    spokeAccounts: # These are the spoke accounts allowed to use the Proxy
+      - account: '222222222222'
+        vpcs:
+          - id: 'vpc-aaaaaaaa'
+          - id: 'vpc-bbbbbbbb'
+    vpc:
+      cidr: '10.2.0.0/21'
+      maxAzs: 3
+      # See
+      flowLogBucketArn: 'arn:aws:s3:::vpc-logs-abc-eu-west-1' # LOGS AWS Account
+      flowLogPrefix: '11111111111' # has to be the account number
+    ecs:
+      desiredCount: 1
+    # yamllint disable-line rule:line-length
+    codestarConnectionArn: 'arn:aws:codestar-connections:eu-west-2:***:connection/FIXME'
+    repo:
+      owner: 'nkhine'
+      repo: 'smart-proxy'
+      branch: 'main'
