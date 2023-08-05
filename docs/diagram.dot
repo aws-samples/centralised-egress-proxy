@@ -1,0 +1,1069 @@
+digraph "Diagram" {
+  splines = "ortho";
+  pad = "1.0";
+  nodesep = "0.60";
+  ranksep = "0.75";
+  fontname = "Sans-Serif";
+  fontsize = "15";
+  dpi = "200";
+  rankdir = "BT";
+  compound = "true";
+  fontcolor = "#222222";
+  edge [
+    color = "#D5871488",
+    penwidth = 2,
+    arrowhead = "dot",
+    arrowtail = "dot",
+  ];
+  node [
+    shape = "box",
+    style = "rounded",
+    fixedsize = true,
+    width = 1.7,
+    height = 1.7,
+    labelloc = "c",
+    imagescale = true,
+    fontname = "Sans-Serif",
+    fontsize = 8,
+    margin = 8,
+  ];
+  subgraph "EgressProxy-CICD-Stack" {
+    subgraph "cluster-SubGraph.EgressProxy-CICD-Stack" {
+      graph [
+        label = "EgressProxy-CICD-Stack",
+        labelloc = "b",
+        labeljust = "l",
+        margin = "10",
+        fontsize = "16",
+        penwidth = "2",
+        pencolor = "#888888",
+        style = "filled,rounded",
+        fillcolor = "#e4e4e4",
+      ];
+      "EgressProxy-CICD-Stack/eu-west-2-Egress" [
+        label = " eu-west-2-Egress",
+        fontsize = 12,
+      ];
+      "EgressProxy-CICD-Stack/eu-west-2-Spoke" [
+        label = " eu-west-2-Spoke",
+        fontsize = 12,
+      ];
+      "EgressProxy-CICD-Stack/SingletonLambda9548389087724e42a3ec3a06b1234567" [
+        label = "\nSingletonLambda954838",
+        fontsize = 12,
+        image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+        imagescale = "true",
+        imagepos = "tc",
+        penwidth = "0",
+        shape = "node",
+        fixedsize = "true",
+        labelloc = "b",
+        width = 2,
+        height = 2.4819999999999998,
+      ];
+      "EgressProxy-CICD-Stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" [
+        label = " ServiceRole",
+        fontsize = 12,
+        image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+        imagescale = "true",
+        imagepos = "tc",
+        penwidth = "0",
+        shape = "node",
+        fixedsize = "true",
+        labelloc = "b",
+        width = 1.2,
+        height = 1.466,
+      ];
+      subgraph "cluster-SubGraph.CDKPipeline" {
+        graph [
+          label = "CDKPipeline",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+          label = " Pipeline",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_AWS-CodePipeline_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.466,
+        ];
+        "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" [
+          label = " CodeBuildActionRole",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.466,
+        ];
+        "EgressProxy-CICD-Stack/CDKPipeline/UpdatePipeline/SelfMutation" [
+          label = " SelfMutation",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.466,
+        ];
+        subgraph "cluster-SubGraph.Assets" {
+          graph [
+            label = "Assets",
+            labelloc = "b",
+            labeljust = "l",
+            margin = "10",
+            fontsize = "16",
+            penwidth = "2",
+            pencolor = "#888888",
+            style = "filled,rounded",
+            fillcolor = "#c7c7c7",
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerRole" [
+            label = " DockerRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerAsset1" [
+            label = " DockerAsset1",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+            label = " FileRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset1" [
+            label = " FileAsset1",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset2" [
+            label = " FileAsset2",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset3" [
+            label = " FileAsset3",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset4" [
+            label = " FileAsset4",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset5" [
+            label = " FileAsset5",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+        }
+      }
+      subgraph "cluster-SubGraph.eu-west-1-Egress" {
+        graph [
+          label = "eu-west-1-Egress",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        subgraph "cluster-SubGraph.ProxyStack" {
+          graph [
+            label = "ProxyStack",
+            labelloc = "b",
+            labeljust = "l",
+            margin = "10",
+            fontsize = "16",
+            penwidth = "2",
+            pencolor = "#888888",
+            style = "filled,rounded",
+            fillcolor = "#c7c7c7",
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+            label = " InfraVPC",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Networking-Content/64/Arch_Amazon-Virtual-Private-Cloud_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/Efs" [
+            label = " Efs",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Storage/64/Arch_Amazon-Elastic-File-System_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/VpcSecurityGroup" [
+            label = " VpcSecurityGroup",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/security_group.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/EgressProxyECR" [
+            label = " EgressProxyECR",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_Amazon-Elastic-Container-Registry_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseRepoArn" [
+            label = " ReleaseRepoArn",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Management-Governance/Res_48_Dark/Res_AWS-Systems-Manager_Parameter-Store_48_Dark.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseRepoName" [
+            label = " ReleaseRepoName",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Management-Governance/Res_48_Dark/Res_AWS-Systems-Manager_Parameter-Store_48_Dark.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseImageTag" [
+            label = " ReleaseImageTag",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Management-Governance/Res_48_Dark/Res_AWS-Systems-Manager_Parameter-Store_48_Dark.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/EgressProxyLogs" [
+            label = " EgressProxyLogs",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Management-Governance/Res_48_Dark/Res_Amazon-Cloudwatch_Logs_48_Dark_gen.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/NLB" [
+            label = " NLB",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Networking-Content/64/Arch_Elastic-Load-Balancing_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" [
+            label = " fargate-task-def",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Containers/Res_48_Dark/Res_Amazon-Elastic-Container-Service_Task_48_Dark_gen.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/cluster" [
+            label = " cluster",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_Amazon-Elastic-Container-Service_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ns" [
+            label = " ns",
+            fontsize = 12,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/SingletonLambda9548389087724e42a3ec3a06b0fc1c12" [
+            label = "\nSingletonLambda954838",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.4819999999999998,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ServiceNameSSM" [
+            label = " ServiceNameSSM",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Management-Governance/Res_48_Dark/Res_AWS-Systems-Manager_Parameter-Store_48_Dark.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/CrossAccountSSMRole" [
+            label = " CrossAccountSSMRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" [
+            label = " ServiceRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          subgraph "cluster-SubGraph.vpce" {
+            graph [
+              label = "vpce",
+              labelloc = "b",
+              labeljust = "l",
+              margin = "10",
+              fontsize = "16",
+              penwidth = "2",
+              pencolor = "#888888",
+              style = "filled,rounded",
+              fillcolor = "#b9b9b9",
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/vpce/VpcEndpointConfiguratorResource" [
+              label = " CloudFormation\nCustomResource",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 1.2,
+              height = 1.682,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/vpce/VpcEndpointConfigurationProvider/framework-onEvent" [
+              label = " framework-onEvent",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 2,
+              height = 2.266,
+            ];
+          }
+          subgraph "cluster-SubGraph.Service" {
+            graph [
+              label = "Service",
+              labelloc = "b",
+              labeljust = "l",
+              margin = "10",
+              fontsize = "16",
+              penwidth = "2",
+              pencolor = "#888888",
+              style = "filled,rounded",
+              fillcolor = "#aaaaaa",
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" [
+              label = " ECS Service Service",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Containers/Res_48_Dark/Res_Amazon-Elastic-Container-Service_Service_48_Dark_gen.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 2,
+              height = 2.266,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/CloudmapService" [
+              label = " CloudmapService",
+              fontsize = 12,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/SecurityGroup" [
+              label = " SecurityGroup",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/security_group.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 2,
+              height = 2.266,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/TaskCount/Target" [
+              label = " Target",
+              fontsize = 12,
+            ];
+          }
+        }
+        subgraph "cluster-SubGraph.ProxyPipeline" {
+          graph [
+            label = "ProxyPipeline",
+            labelloc = "b",
+            labeljust = "l",
+            margin = "10",
+            fontsize = "16",
+            penwidth = "2",
+            pencolor = "#888888",
+            style = "filled,rounded",
+            fillcolor = "#c7c7c7",
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/ArtifactsBucket" [
+            label = " ArtifactsBucket",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Storage/64/Arch_Amazon-S3-Standard_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/Pipeline" [
+            label = " Pipeline",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_AWS-CodePipeline_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyRole" [
+            label = " BuildProxyRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyApp" [
+            label = " BuildProxyApp",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Developer- Tools/64/Arch_Amazon-CodeBuild_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+        }
+      }
+      subgraph "cluster-SubGraph.eu-west-1-Spoke" {
+        graph [
+          label = "eu-west-1-Spoke",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        subgraph "cluster-SubGraph.SpokeStack222222222222" {
+          graph [
+            label = "SpokeStack222222222222",
+            labelloc = "b",
+            labeljust = "l",
+            margin = "10",
+            fontsize = "16",
+            penwidth = "2",
+            pencolor = "#888888",
+            style = "filled,rounded",
+            fillcolor = "#c7c7c7",
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/SingletonLambda1548389087724e42a3ec3a06b0fc1112" [
+            label = "\nSingletonLambda154838",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.4819999999999998,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" [
+            label = " ServiceRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/vpc-vpc-aaaaaaaa/egress-proxy" [
+            label = " egress-proxy",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Networking-and-Content-Delivery/Res_48_Dark/Res_Amazon-VPC_Endpoints_48_Dark_gen.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          subgraph "cluster-SubGraph.ServiceNameReader" {
+            graph [
+              label = "ServiceNameReader",
+              labelloc = "b",
+              labeljust = "l",
+              margin = "10",
+              fontsize = "16",
+              penwidth = "2",
+              pencolor = "#888888",
+              style = "filled,rounded",
+              fillcolor = "#b9b9b9",
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/ServiceNameReader/SSMReaderCR" [
+              label = " CloudFormation\nCustomResource\nSSMReaderCR",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 1.2,
+              height = 1.898,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/ServiceNameReader/SSMReaderProvider/framework-onEvent" [
+              label = " framework-onEvent",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 2,
+              height = 2.266,
+            ];
+          }
+        }
+        subgraph "cluster-SubGraph.SpokeStack333333333333" {
+          graph [
+            label = "SpokeStack333333333333",
+            labelloc = "b",
+            labeljust = "l",
+            margin = "10",
+            fontsize = "16",
+            penwidth = "2",
+            pencolor = "#888888",
+            style = "filled,rounded",
+            fillcolor = "#c7c7c7",
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/SingletonLambda1548389087724e42a3ec3a06b0fc1112" [
+            label = "\nSingletonLambda154838",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.4819999999999998,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" [
+            label = " ServiceRole",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 1.2,
+            height = 1.466,
+          ];
+          "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/vpc-vpc-bbbbbbb/egress-proxy" [
+            label = " egress-proxy",
+            fontsize = 12,
+            image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Resource/Res_Networking-and-Content-Delivery/Res_48_Dark/Res_Amazon-VPC_Endpoints_48_Dark_gen.png",
+            imagescale = "true",
+            imagepos = "tc",
+            penwidth = "0",
+            shape = "node",
+            fixedsize = "true",
+            labelloc = "b",
+            width = 2,
+            height = 2.266,
+          ];
+          subgraph "cluster-SubGraph.ServiceNameReader" {
+            graph [
+              label = "ServiceNameReader",
+              labelloc = "b",
+              labeljust = "l",
+              margin = "10",
+              fontsize = "16",
+              penwidth = "2",
+              pencolor = "#888888",
+              style = "filled,rounded",
+              fillcolor = "#b9b9b9",
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/ServiceNameReader/SSMReaderCR" [
+              label = " CloudFormation\nCustomResource\nSSMReaderCR",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 1.2,
+              height = 1.898,
+            ];
+            "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/ServiceNameReader/SSMReaderProvider/framework-onEvent" [
+              label = " framework-onEvent",
+              fontsize = 12,
+              image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+              imagescale = "true",
+              imagepos = "tc",
+              penwidth = "0",
+              shape = "node",
+              fixedsize = "true",
+              labelloc = "b",
+              width = 2,
+              height = 2.266,
+            ];
+          }
+        }
+      }
+      subgraph "cluster-SubGraph.GithubTrigger" {
+        graph [
+          label = "GithubTrigger",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        "EgressProxy-CICD-Stack/GithubTrigger/TriggerFn" [
+          label = " TriggerFn",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+        "EgressProxy-CICD-Stack/GithubTrigger/WebhookManager" [
+          label = " CloudFormation\nCustomResource\nWebhookManager",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.898,
+        ];
+        "EgressProxy-CICD-Stack/GithubTrigger/WebhookManagerProvider/framework-onEvent" [
+          label = " framework-onEvent",
+          fontsize = 12,
+          image = "/home/khine/go/src/github.com/nkhine/egress-proxy/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+      }
+    }
+  }
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/UpdatePipeline/SelfMutation" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerAsset1" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset1" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset2" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset3" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset4" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset5" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/UpdatePipeline/SelfMutation" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerAsset1" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset1" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset2" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset3" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset4" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/CodeBuildActionRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset5" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerAsset1" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerAsset1" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/DockerRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset1" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset1" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset2" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset2" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset3" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset3" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset4" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset4" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset5" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileAsset5" -> "EgressProxy-CICD-Stack/CDKPipeline/Assets/FileRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/CDKPipeline/UpdatePipeline/SelfMutation" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/Efs" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/VpcSecurityGroup" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/NLB" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/Efs" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseRepoArn" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseRepoName" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ReleaseImageTag" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/EgressProxyLogs" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/EgressProxyECR" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ns" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/vpce/VpcEndpointConfigurationProvider/framework-onEvent" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/SingletonLambda9548389087724e42a3ec3a06b0fc1c12" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ServiceNameSSM" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/vpce/VpcEndpointConfiguratorResource" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/CrossAccountSSMRole" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ServiceNameSSM" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/NLB" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/fargate-task-def" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/cluster" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/CloudmapService" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/SecurityGroup" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/CloudmapService" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/ns" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/SecurityGroup" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/InfraVPC" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/TaskCount/Target" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/Service" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/service/Service/TaskCount/Target" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/cluster" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/Pipeline" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/ArtifactsBucket" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/Pipeline" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyApp" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyRole" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/ArtifactsBucket" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyRole" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyApp" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyApp" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyPipeline/BuildProxyRole" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/ServiceNameReader/SSMReaderProvider/framework-onEvent" -> "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/SingletonLambda1548389087724e42a3ec3a06b0fc1112" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/vpc-vpc-aaaaaaaa/egress-proxy" -> "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack222222222222/ServiceNameReader/SSMReaderCR" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/ServiceNameReader/SSMReaderProvider/framework-onEvent" -> "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/SingletonLambda1548389087724e42a3ec3a06b0fc1112" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/vpc-vpc-bbbbbbb/egress-proxy" -> "EgressProxy-CICD-Stack/eu-west-1-Spoke/SpokeStack333333333333/ServiceNameReader/SSMReaderCR" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/GithubTrigger/TriggerFn" -> "EgressProxy-CICD-Stack/CDKPipeline/Pipeline" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/GithubTrigger/WebhookManagerProvider/framework-onEvent" -> "EgressProxy-CICD-Stack/SingletonLambda9548389087724e42a3ec3a06b1234567" [
+    dir = "both",
+  ];
+  "EgressProxy-CICD-Stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" -> "EgressProxy-CICD-Stack/eu-west-1-Egress/ProxyStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole" [
+    dir = "both",
+  ];
+}

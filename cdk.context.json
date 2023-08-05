@@ -1,0 +1,191 @@
+{
+  "availability-zones:account=111111111111:region=eu-west-1": [
+    "eu-west-1a",
+    "eu-west-1b",
+    "eu-west-1c"
+  ],
+  "ami:account=111111111111:filters.image-type.0=machine:filters.name.0=amzn-ami-vpc-nat-*:filters.state.0=available:owners.0=amazon:region=eu-west-1": "ami-0f575645c469d6226",
+  "vpc-provider:account=222222222222:filter.vpc-id=vpc-0305d80fcb8868d76:region=eu-west-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0305d80fcb8868d76",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "222222222222",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-078e3467d9b80d6ef",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-0973463d0100dfd18"
+          },
+          {
+            "subnetId": "subnet-034ff76f2b3f518a7",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-0973463d0100dfd18"
+          },
+          {
+            "subnetId": "subnet-07a890e7e89cc50f0",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "eu-west-1c",
+            "routeTableId": "rtb-0973463d0100dfd18"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=222222222222:filter.vpc-id=vpc-076cdef924e4676e6:region=eu-west-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-076cdef924e4676e6",
+    "vpcCidrBlock": "10.85.0.0/16",
+    "ownerAccountId": "222222222222",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-086f62903df845647",
+            "cidr": "10.85.128.0/18",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-0c4f8fb6b0d698791"
+          },
+          {
+            "subnetId": "subnet-04e3b1bb7281c51aa",
+            "cidr": "10.85.192.0/18",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-01a7c02a1ae08480d"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0bd02f327826eb3a4",
+            "cidr": "10.85.0.0/18",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-09eaa29f17f4d2f1b"
+          },
+          {
+            "subnetId": "subnet-0530480ed8734d875",
+            "cidr": "10.85.64.0/18",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-0476601cb30039016"
+          }
+        ]
+      }
+    ]
+  },
+  "availability-zones:account=111111111111:region=eu-west-2": [
+    "eu-west-2a",
+    "eu-west-2b",
+    "eu-west-2c"
+  ],
+  "ami:account=111111111111:filters.image-type.0=machine:filters.name.0=amzn-ami-vpc-nat-*:filters.state.0=available:owners.0=amazon:region=eu-west-2": "ami-08bdc6ab22d0b6e22",
+  "vpc-provider:account=222222222222:filter.vpc-id=vpc-09801e58e50f41a82:region=eu-west-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-09801e58e50f41a82",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "222222222222",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-063feba5d47a03395",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "eu-west-2a",
+            "routeTableId": "rtb-050e348e31ada79d4"
+          },
+          {
+            "subnetId": "subnet-01815460fba9d8236",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "eu-west-2b",
+            "routeTableId": "rtb-050e348e31ada79d4"
+          },
+          {
+            "subnetId": "subnet-001ad7e1bc01d9dca",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "eu-west-2c",
+            "routeTableId": "rtb-050e348e31ada79d4"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=22222222222:filter.vpc-id=vpc-8c6f4ae5:region=eu-west-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-8c6f4ae5",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "22222222222",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-8abfebf1",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "eu-west-2a",
+            "routeTableId": "rtb-1d350a74"
+          },
+          {
+            "subnetId": "subnet-b00b6afd",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "eu-west-2b",
+            "routeTableId": "rtb-1d350a74"
+          },
+          {
+            "subnetId": "subnet-365c985f",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "eu-west-2c",
+            "routeTableId": "rtb-1d350a74"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=22222222222:filter.vpc-id=vpc-7072ae18:region=eu-west-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-7072ae18",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "22222222222",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-a37280d9",
+            "cidr": "10.0.0.0/20",
+            "availabilityZone": "eu-west-2a",
+            "routeTableId": "rtb-b425a5dc"
+          },
+          {
+            "subnetId": "subnet-4045460d",
+            "cidr": "10.0.16.0/20",
+            "availabilityZone": "eu-west-2b",
+            "routeTableId": "rtb-b425a5dc"
+          },
+          {
+            "subnetId": "subnet-042d916d",
+            "cidr": "10.0.32.0/20",
+            "availabilityZone": "eu-west-2c",
+            "routeTableId": "rtb-b425a5dc"
+          }
+        ]
+      }
+    ]
+  },
+  "availability-zones:account=222222222227:region=eu-west-2": [
+    "eu-west-2a",
+    "eu-west-2b",
+    "eu-west-2c"
+  ]
+}
